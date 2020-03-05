@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ParagraphWithFocusedLine from './ParagraphWithFocusedLine';
 
 export default function TypingWindow({ lines, setFinishedLines }) {
     const inputEl = useRef(null);
     const [index, setIndex] = useState(0);
     const [inputLine, setInputLine] = useState('');
-    const [inputArr, setInputArr] = useState([]);
+    const defaultLines = new Array(lines.length);
+    defaultLines.fill('');
+    const [inputArr, setInputArr] = useState(defaultLines);
 
+    // focus input when first rendered
     useEffect(() => {
         inputEl.current.focus();
     }, []);
 
+    // Completed all lines
     useEffect(() => {
         if (index >= lines.length) {
             setFinishedLines(inputArr);
@@ -18,10 +21,12 @@ export default function TypingWindow({ lines, setFinishedLines }) {
         return;
     }, [index, setFinishedLines, lines.length, inputArr]);
 
+    // Handle enter key press
     useEffect(() => {
         function handleEnter(e) {
             if (e.key === 'Enter') {
-                setInputArr([...inputArr, inputLine]);
+                inputArr[index] = inputLine;
+                setInputArr(inputArr);
                 setInputLine('');
                 setIndex(index + 1);
             }
@@ -33,11 +38,15 @@ export default function TypingWindow({ lines, setFinishedLines }) {
 
     return (
         <div>
-            <ParagraphWithFocusedLine
-                textArr={lines}
-                focusedIndex={index}
-                inputArr={inputArr}
-            ></ParagraphWithFocusedLine>
+            <div>
+                {lines.map((line, i) => {
+                    if (i === index) {
+                        return <h1>{line}</h1>;
+                    } else {
+                        return <p>{line}</p>;
+                    }
+                })}
+            </div>
             <input
                 ref={inputEl}
                 value={inputLine}
