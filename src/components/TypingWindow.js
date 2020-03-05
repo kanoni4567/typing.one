@@ -1,34 +1,42 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ParagraphWithFocusedLine from './ParagraphWithFocusedLine';
 
-const lines = 'Agora tenho de partir \npara longe e sempre \nsem nunca mais voltar. \nEu devo novamente fugir \ncomo tantas vezes durante a vida \nindo embora sem chorar \ndepois de outra luta perdida. \nParto mas hoje eu sei \nque jamais voltarei \naqui ou a qualquer lugar.'.split(
-    '\n'
-);
-
-export default function TypingWindow() {
+export default function TypingWindow({ lines, setFinishedLines }) {
     const inputEl = useRef(null);
     const [index, setIndex] = useState(0);
     const [inputLine, setInputLine] = useState('');
+    const [inputArr, setInputArr] = useState([]);
+
+    useEffect(() => {
+        inputEl.current.focus();
+    }, []);
+
+    useEffect(() => {
+        if (index >= lines.length) {
+            setFinishedLines(inputArr);
+        }
+        return;
+    }, [index, setFinishedLines, lines.length, inputArr]);
 
     useEffect(() => {
         function handleEnter(e) {
             if (e.key === 'Enter') {
-                console.log(inputEl.current.value);
+                setInputArr([...inputArr, inputLine]);
                 setInputLine('');
-                console.log("increase index")
                 setIndex(index + 1);
             }
         }
-        inputEl.current.addEventListener('keypress', handleEnter);
-        return () =>
-            inputEl.current.removeEventListener('keypress', handleEnter);
+        const inputRef = inputEl.current;
+        inputRef.addEventListener('keypress', handleEnter);
+        return () => inputRef.removeEventListener('keypress', handleEnter);
     });
+
     return (
         <div>
             <ParagraphWithFocusedLine
                 textArr={lines}
                 focusedIndex={index}
-                inputLine={inputLine}
+                inputArr={inputArr}
             ></ParagraphWithFocusedLine>
             <input
                 ref={inputEl}
