@@ -10,7 +10,23 @@ const lines = 'Agora tenho de partir \npara longe e sempre \nsem nunca mais volt
     '\n'
 );
 
-var diff = new Diff();
+const api = 'https://meowfacts.herokuapp.com/';
+
+const renderResult = (initialLines, resultLines) => {
+    var diff = new Diff();
+    return (
+        <div>
+            {resultLines.map((line, i) => {
+                var textDiff = diff.main(initialLines[i], line); // produces diff array
+                diff.cleanupSemantic(textDiff);
+                return ReactHtmlParser(
+                    `<p>${diff.prettyHtml(textDiff)}</p>`
+                );
+            })}
+        </div>
+    );
+};
+
 
 function App() {
     const [typing, setTyping] = useState(true);
@@ -21,25 +37,15 @@ function App() {
         setTyping(false);
     };
 
-    const renderResult = (initialLines, resultLines) => {
-        return (
-            <div>
-                {resultLines.map((line, i) => {
-                    var textDiff = diff.main(initialLines[i], line); // produces diff array
-                    diff.cleanupSemantic(textDiff);
-                    return ReactHtmlParser(`<p>${diff.prettyHtml(textDiff)}</p>`);
-                })}
-                <button onClick={() => setTyping(true)}>Redo</button>
-            </div>
-        );
-    };
-
     return (
         <div className="App">
             {typing ? (
-                <TypingWindow lines={lines} setFinishedLines={finishTyping} />
+                <TypingWindow api={api} lines={lines} setFinishedLines={finishTyping} />
             ) : (
-                renderResult(lines, finishedLines)
+                <div>
+                    {renderResult(lines, finishedLines)}
+                    <button onClick={() => setTyping(true)}>Redo</button>
+                </div>
             )}
         </div>
     );

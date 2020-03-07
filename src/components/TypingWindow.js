@@ -57,7 +57,7 @@ const lineDiff = (oldLine, newLine) => {
     return result;
 };
 
-export default function TypingWindow({ lines, setFinishedLines }) {
+export default function TypingWindow({ lines, setFinishedLines, api }) {
     const inputEl = useRef(null);
 
     const [index, setIndex] = useState(0);
