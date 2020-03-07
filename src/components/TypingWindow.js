@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
@@ -57,32 +58,65 @@ const lineDiff = (oldLine, newLine) => {
     return result;
 };
 
-export default function TypingWindow({ lines, setFinishedLines, api }) {
-    const inputEl = useRef(null);
-
-    const [index, setIndex] = useState(0);
-    const [inputLine, setInputLine] = useState('');
-    const defaultLines = new Array(lines.length);
-    defaultLines.fill('');
-    const [inputArr, setInputArr] = useState(defaultLines);
-
-    // focus input when first rendered
+const useFocusInput = inputEl => {
     useEffect(() => {
         inputEl.current.focus();
     }, []);
+};
+
+const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
+    useEffect(() => {
+        const retrieveCount = maxCount - index;
+        if (retrieveCount <= 0) {
+            return;
+        }
+        const promises = [];
+        for (let i = 0; i < retrieveCount; i++) {
+            promises.push(axios.get(api));
+        }
+        Promise.all(promises).then(responses => {
+            // console.log(responses.map(res => res.data.data[0]))
+            setLines([...linesArr, ...responses.map(res => res.data.data[0])]);
+        });
+        return () => {};
+    }, [linesArr, maxCount, setLines, api]);
+};
+
+export default function TypingWindow({
+    defaultLines,
+    setFinishedLines,
+    api,
+    offset
+}) {
+    if (!offset) {
+        offset = 3;
+    }
+    const inputEl = useRef(null);
+    const [lines, setLines] = useState(defaultLines || []);
+    const [index, setIndex] = useState(0);
+    const [inputLine, setInputLine] = useState('');
+    const [inputArr, setInputArr] = useState([]);
+
+    useFillLinesToMax(api, lines, index, 10, setLines);
+
+    // focus input when first rendered
+    useFocusInput(inputEl);
 
     // Completed all lines
-    useEffect(() => {
-        if (index >= lines.length) {
-            setFinishedLines(inputArr);
-        }
-        return;
-    }, [index, setFinishedLines, lines.length, inputArr]);
+    // useEffect(() => {
+    //     if (index >= lines.length) {
+    //         setFinishedLines(inputArr);
+    //     }
+    //     return;
+    // }, [index, setFinishedLines, lines.length, inputArr]);
 
     // Handle enter key press
     useEffect(() => {
         function handleEnter(e) {
-            if (e.key === 'Enter') {
+            if (
+                e.key === 'Enter' ||
+                (e.key === ' ' && inputLine.length >= lines[index].length)
+            ) {
                 inputArr[index] = inputLine;
                 setInputArr(inputArr);
                 setInputLine('');
@@ -110,9 +144,9 @@ export default function TypingWindow({ lines, setFinishedLines, api }) {
                                 {lineDiff(line, inputLine)}
                             </p>
                         );
-                    } else {
+                    } else if (i > index - offset && i < index + offset) {
                         return (
-                            <p css={linesCss}>{lineDiff(line, inputArr[i])}</p>
+                            <p css={linesCss}>{lineDiff(line, inputArr[i] || "")}</p>
                         );
                     }
                 })}
