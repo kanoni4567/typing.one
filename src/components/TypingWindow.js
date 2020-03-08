@@ -113,10 +113,7 @@ export default function TypingWindow({
     // Handle enter key press
     useEffect(() => {
         function handleEnter(e) {
-            if (
-                e.key === 'Enter' ||
-                (e.key === ' ' && inputLine.length >= lines[index].length)
-            ) {
+            if (e.key === 'Enter' || inputLine.length >= lines[index].length) {
                 inputArr[index] = inputLine;
                 setInputArr(inputArr);
                 setInputLine('');
@@ -146,7 +143,9 @@ export default function TypingWindow({
                         );
                     } else if (i > index - offset && i < index + offset) {
                         return (
-                            <p css={linesCss}>{lineDiff(line, inputArr[i] || "")}</p>
+                            <p css={linesCss}>
+                                {lineDiff(line, inputArr[i] || '')}
+                            </p>
                         );
                     }
                 })}
