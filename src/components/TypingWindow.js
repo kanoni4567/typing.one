@@ -97,7 +97,7 @@ export default function TypingWindow({
     const [inputLine, setInputLine] = useState('');
     const [inputArr, setInputArr] = useState([]);
 
-    useFillLinesToMax(api, lines, index, 10, setLines);
+    useFillLinesToMax(api, lines, index, 5, setLines);
 
     // focus input when first rendered
     useFocusInput(inputEl);
