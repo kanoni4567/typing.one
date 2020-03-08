@@ -66,7 +66,7 @@ const useFocusInput = inputEl => {
 
 const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
     useEffect(() => {
-        const retrieveCount = maxCount - index;
+        const retrieveCount = maxCount - (linesArr.length - index);
         if (retrieveCount <= 0) {
             return;
         }
@@ -79,7 +79,7 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
             setLines([...linesArr, ...responses.map(res => res.data.data[0])]);
         });
         return () => {};
-    }, [linesArr, maxCount, setLines, api]);
+    }, [linesArr, maxCount, setLines, api, index]);
 };
 
 export default function TypingWindow({
