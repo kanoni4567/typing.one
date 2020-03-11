@@ -12,7 +12,8 @@ const defaultTheme = {
     backgroundColor: '#edffea',
     matchColor: '#1eb2a6',
     nomatchColor: '#f67575',
-    currentColor: '#ffa34d'
+    currentColor: '#ffa34d',
+    defaultColor: 'black'
 }
 
 // const renderResult = (initialLines, resultLines) => {

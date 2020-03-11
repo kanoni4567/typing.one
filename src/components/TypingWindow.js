@@ -176,7 +176,9 @@ const colorizeLine = (line, wordIndex, theme) => {
                 color: ${theme.currentColor};
             `;
         } else {
-            wordCss = css``;
+            wordCss = css`
+                color: ${theme.defaultColor};
+            `;
         }
         result.push(<span css={wordCss}>{wordObj.word} </span>);
     }
