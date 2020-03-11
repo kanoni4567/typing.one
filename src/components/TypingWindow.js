@@ -100,6 +100,26 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
     }, [linesArr, maxCount, setLines, api, index]);
 };
 
+const useWpmArr = (lines, lineIndex) => {
+    const [wpmArr, setWpmArr] = useState([]);
+    const [lastStartTime, setLastStartTime] = useState(Date.now());
+    useEffect(() => {
+        if (lineIndex > 0) {
+            const correctKeyCount = lines[lineIndex - 1].reduce(
+                (prev, curr) => prev + (curr.correct ? curr.word.length : 0), 0
+            );
+            console.log('correctKeyCount', correctKeyCount)
+            const words = correctKeyCount / 5;
+            const minutes = (Date.now() - lastStartTime) / 1000 / 60;
+            let wpm = Math.floor(words / minutes);
+            wpmArr.push(wpm);
+            setWpmArr(wpmArr);
+            setLastStartTime(Date.now());
+        }
+    }, [lineIndex]);
+    return wpmArr;
+};
+
 export default function TypingWindow({
     defaultLines,
     setFinishedLines,
@@ -115,11 +135,13 @@ export default function TypingWindow({
     const [wordIndex, setWordIndex] = useState(0);
     const [inputLine, setInputLine] = useState('');
 
-
     // focus input when first rendered
     useFocusInput(inputEl);
 
     useFillLinesToMax(api, lines, index, 5, setLines);
+
+    const wpmArr = useWpmArr(lines, index);
+
 
     // Completed all lines
     // useEffect(() => {
@@ -173,22 +195,25 @@ export default function TypingWindow({
         return () => inputRef.removeEventListener('keypress', handleEnter);
     });
 
+    let inputCss = css``;
+    if (
+        lines[index] &&
+        lines[index][wordIndex] &&
+        inputLine !== lines[index][wordIndex].word.slice(0, inputLine.length)
+    ) {
+        inputCss = inputErrorCss;
+    }
+
     return (
         <div>
             <div>{renderLines(lines, index, wordIndex, offset)}</div>
             <input
-                css={
-                    lines[index] &&
-                    lines[index][wordIndex] &&
-                    inputLine !==
-                        lines[index][wordIndex].word.slice(0, inputLine.length)
-                        ? inputErrorCss
-                        : css``
-                }
+                css={inputCss}
                 ref={inputEl}
                 value={inputLine}
                 onChange={e => setInputLine(e.target.value)}
             ></input>
+            <p>{wpmArr}</p>
         </div>
     );
 }
