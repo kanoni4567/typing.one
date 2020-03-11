@@ -1,18 +1,38 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
-const rootCss = css`
+const innerPadding = css`
+    padding: 0 2rem;
+`
+
+const headerWrapperCss = css`
     width: 65rem;
     height: 25rem;
+    display: flex;
+    flex-direction: column;
+`
+
+const headerCss = css`
+    height: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 1.5rem;
+`
+
+const headerContentCss = css`
+    font-size: 0.8rem;
+`
+
+const mainContainerCss = css`
+    ${innerPadding}
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
     border-radius: 0.5rem;
-    padding: 0 2rem; 
-    margin: auto;
+    flex: 1 0 auto; 
 `;
 
 const linesContainerCss = css`
@@ -20,6 +40,10 @@ const linesContainerCss = css`
     width: 100%;
     margin: auto;
 `;
+
+const singleLineContainerCss = css`
+    position: relative;
+`
 
 const inputBaseCss = css`
     width: 50%;
@@ -32,20 +56,28 @@ const inputBaseCss = css`
 const linesBaseCss = css`
     transition: 0.15s;
     padding: 0.5rem 0;
-    width: 100%;
 `;
 
 const mainLineCss = css`
     ${linesBaseCss};
-    font-size: x-large;
+    font-size: 1.3rem;
     font-weight: bold;
     padding: 1rem 0;
 `;
 
+const lineWpmCss = css`
+    ${linesBaseCss}
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+`
+
 const useFocusInput = inputEl => {
     useEffect(() => {
         inputEl.current.focus();
-    }, []);
+    }, [inputEl]);
 };
 
 const useFillLinesToMax = (apis, linesArr, index, maxCount, setLines) => {
@@ -177,17 +209,30 @@ export default function TypingWindow({ defaultLines, apis, offset, theme }) {
     }
 
     return (
-        <div css={[rootCss, css`background-color: ${theme.mainContainerColor};`]}>
-            <div css={linesContainerCss}>
-                {renderLines(lines, index, wordIndex, offset, wpmArr, theme)}
+        <div css={headerWrapperCss}>
+            <div css={headerCss}>
+                <div
+                    css={css`
+                        ${headerContentCss}
+                        color: ${theme.inputColor};
+                    `}
+                >
+                    WPM
+                </div>
             </div>
-            <input
-                css={inputCss}
-                ref={inputEl}
-                value={inputLine}
-                onChange={e => setInputLine(e.target.value)}
-            ></input>
+            <div css={[mainContainerCss, css`background-color: ${theme.mainContainerColor};`]}>
+                <div css={linesContainerCss}>
+                    {renderLines(lines, index, wordIndex, offset, wpmArr, theme)}
+                </div>
+                <input
+                    css={inputCss}
+                    ref={inputEl}
+                    value={inputLine}
+                    onChange={e => setInputLine(e.target.value)}
+                ></input>
+            </div>
         </div>
+        
     );
 }
 
@@ -213,39 +258,30 @@ const colorizeLine = (line, wordIndex, theme) => {
                 color: ${theme.defaultColor};
             `;
         }
-        result.push(<span css={wordCss}>{wordObj.word} </span>);
+        result.push(<span key={i} css={wordCss}>{wordObj.word} </span>);
     }
     return result;
 };
 
 const renderLines = (lines, lineIndex, wordIndex, offset, wpmArr, theme) => {
-    let result = []
-    if (lineIndex - offset < 0) {
-        for (let i = 0; i < offset - lineIndex - 1; i++) {
-            result.push(<p css={linesBaseCss}>-</p>)
-        }
-    }
-    return [result, lines.map((line, i) => {
-        if (i === lineIndex) {
+    return lines.map((line, i) => {
+        if (i > lineIndex - offset && i < lineIndex + offset) {
             return (
-                <p css={mainLineCss}>{colorizeLine(line, wordIndex, theme)}</p>
-            );
-        } else if (i > lineIndex - offset && i < lineIndex + offset) {
-            return (
-                <p css={linesBaseCss}>
-                    {colorizeLine(line, null, theme)}{' '}
-                    <span
+                <div css={singleLineContainerCss} key={i}>
+                    <div css={i === lineIndex? mainLineCss : linesBaseCss}>
+                        {colorizeLine(line, i === lineIndex? wordIndex : null, theme)}
+                    </div>
+                    <div
                         css={css`
+                            ${lineWpmCss}
                             color: ${theme.defaultColor};
-                            display: block;
-                            float: right;
-                            font-weight: bold;
                         `}
                     >
-                        {wpmArr[i] ? 'WPM: ' + wpmArr[i] : ''}
-                    </span>
-                </p>
+                        {wpmArr[i] ? wpmArr[i] : ''}
+                    </div>
+                </div>
+                
             );
         }
-    })];
+    });
 };

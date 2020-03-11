@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import Diff from 'text-diff';
-import ReactHtmlParser from 'react-html-parser';
+import { useState } from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
@@ -63,14 +61,14 @@ function App() {
                 background-color: ${theme.backgroundColor};
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
                 text-align: center;
             `}
         >
             <h2
                 css={css`
-                    padding-top: 2rem;
+                    margin: 2rem 0 5rem 0;
                     color: ${theme.inputColor};
                 `}
             >
