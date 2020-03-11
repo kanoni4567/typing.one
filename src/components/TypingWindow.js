@@ -3,15 +3,32 @@ import axios from 'axios';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
-const linesContainerCss = css``;
+const rootCss = css`
+    width: 70rem;
+    height: 50rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const linesContainerCss = css`
+    text-align: center;
+    width: 100%;
+`;
 
 const inputBaseCss = css`
+    width: 50%;
     margin: 1.5rem 0;
+    font: inherit;
+    padding: 0.2rem 0.6rem;
+    border: none;
 `;
 
 const linesBaseCss = css`
     transition: 0.15s;
-    padding: 0.2rem 0;
+    padding: 0.5rem 0;
+    width: 100%;
 `;
 
 const mainLineCss = css`
@@ -53,7 +70,8 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
                             correct: null
                         }))
                 )
-                .filter(line => line.length < 20);
+                // filter specifically for cat facts api
+                .filter(line => line.length < 20 && !line.some(wordObj => wordObj.word.match(/(http)|(subscribe)|(valid)/g)));
             setLines([...linesArr, ...wordsOfLines]);
         });
         return () => {};
@@ -82,7 +100,7 @@ const useWpmArr = (lines, lineIndex) => {
 
 export default function TypingWindow({ defaultLines, api, offset, theme }) {
     if (!offset) {
-        offset = 3;
+        offset = 4;
     }
     const inputEl = useRef(null);
     const [lines, setLines] = useState(defaultLines || []);
@@ -150,9 +168,9 @@ export default function TypingWindow({ defaultLines, api, offset, theme }) {
     }
 
     return (
-        <div>
+        <div css={rootCss}>
             <div css={linesContainerCss}>
-                {renderLines(lines, index, wordIndex, offset, theme)}
+                {renderLines(lines, index, wordIndex, offset, wpmArr, theme)}
             </div>
             <input
                 css={inputCss}
@@ -160,7 +178,6 @@ export default function TypingWindow({ defaultLines, api, offset, theme }) {
                 value={inputLine}
                 onChange={e => setInputLine(e.target.value)}
             ></input>
-            <p>{wpmArr[wpmArr.length - 1]}</p>
         </div>
     );
 }
@@ -192,14 +209,28 @@ const colorizeLine = (line, wordIndex, theme) => {
     return result;
 };
 
-const renderLines = (lines, lineIndex, wordIndex, offset, theme) => {
+const renderLines = (lines, lineIndex, wordIndex, offset, wpmArr, theme) => {
     return lines.map((line, i) => {
         if (i === lineIndex) {
             return (
                 <p css={mainLineCss}>{colorizeLine(line, wordIndex, theme)}</p>
             );
         } else if (i > lineIndex - offset && i < lineIndex + offset) {
-            return <p css={linesBaseCss}>{colorizeLine(line, null, theme)}</p>;
+            return (
+                <p css={linesBaseCss}>
+                    {colorizeLine(line, null, theme)}{' '}
+                    <span
+                        css={css`
+                            color: ${theme.defaultColor};
+                            display: block;
+                            float: right;
+                            font-weight: bold;
+                        `}
+                    >
+                        {wpmArr[i]? ('WPM: ' + wpmArr[i]) : ''}
+                    </span>
+                </p>
+            );
         }
     });
 };

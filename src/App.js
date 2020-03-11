@@ -16,20 +16,6 @@ const defaultTheme = {
     defaultColor: 'black'
 }
 
-// const renderResult = (initialLines, resultLines) => {
-//     var diff = new Diff();
-//     return (
-//         <div>
-//             {resultLines.map((line, i) => {
-//                 var textDiff = diff.main(initialLines[i], line); // produces diff array
-//                 diff.cleanupSemantic(textDiff);
-//                 return ReactHtmlParser(
-//                     `<p>${diff.prettyHtml(textDiff)}</p>`
-//                 );
-//             })}
-//         </div>
-//     );
-// };
 function useLocalStorage(key, initialValue) {
     // State to store our value
     // Pass initial state function to useState so logic is only executed once
