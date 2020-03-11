@@ -20,6 +20,10 @@ const linesCss = css`
     transition: 0.15s;
 `;
 
+const inputErrorCss = css`
+    background-color: #f67575;
+`;
+
 // const lineDiff = (oldLine, newLine) => {
 //     var oldLineToCompare = oldLine.slice(0, newLine.length);
 //     var remain = oldLine.slice(newLine.length);
@@ -111,10 +115,11 @@ export default function TypingWindow({
     const [wordIndex, setWordIndex] = useState(0);
     const [inputLine, setInputLine] = useState('');
 
-    useFillLinesToMax(api, lines, index, 5, setLines);
 
     // focus input when first rendered
     useFocusInput(inputEl);
+
+    useFillLinesToMax(api, lines, index, 5, setLines);
 
     // Completed all lines
     // useEffect(() => {
@@ -173,11 +178,12 @@ export default function TypingWindow({
             <div>{renderLines(lines, index, wordIndex, offset)}</div>
             <input
                 css={
-                    lines[index] && lines[index][wordIndex] && inputLine === lines[index][wordIndex].word.slice(0, inputLine.length)
-                        ? css``
-                        : css`
-                              background-color: #f67575;
-                          `
+                    lines[index] &&
+                    lines[index][wordIndex] &&
+                    inputLine !==
+                        lines[index][wordIndex].word.slice(0, inputLine.length)
+                        ? inputErrorCss
+                        : css``
                 }
                 ref={inputEl}
                 value={inputLine}
@@ -218,16 +224,10 @@ const renderLines = (lines, lineIndex, wordIndex, offset) => {
                     `}
                 >
                     {colorizeLine(line, wordIndex)}
-                    {/* {lineDiff(line, inputLine)} */}
                 </p>
             );
         } else if (i > lineIndex - offset && i < lineIndex + offset) {
-            return (
-                <p css={linesCss}>
-                    {colorizeLine(line, null)}
-                    {/* {lineDiff(line, inputArr[i] || '')} */}
-                </p>
-            );
+            return <p css={linesCss}>{colorizeLine(line, null)}</p>;
         }
     });
 };
