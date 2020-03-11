@@ -9,9 +9,16 @@ const inputBaseCss = css`
     margin: 1.5rem 0;
 `;
 
-const linesCss = css`
+const linesBaseCss = css`
     transition: 0.15s;
     padding: 0.2rem 0;
+`;
+
+const mainLineCss = css`
+    ${linesBaseCss};
+    font-size: x-large;
+    font-weight: bold;
+    padding: 1rem 0;
 `;
 
 const inputErrorCss = css`
@@ -189,19 +196,10 @@ const renderLines = (lines, lineIndex, wordIndex, offset, theme) => {
     return lines.map((line, i) => {
         if (i === lineIndex) {
             return (
-                <p
-                    css={css`
-                        ${linesCss};
-                        font-size: x-large;
-                        font-weight: bold;
-                        padding: 1rem 0;
-                    `}
-                >
-                    {colorizeLine(line, wordIndex, theme)}
-                </p>
+                <p css={mainLineCss}>{colorizeLine(line, wordIndex, theme)}</p>
             );
         } else if (i > lineIndex - offset && i < lineIndex + offset) {
-            return <p css={linesCss}>{colorizeLine(line, null, theme)}</p>;
+            return <p css={linesBaseCss}>{colorizeLine(line, null, theme)}</p>;
         }
     });
 };
