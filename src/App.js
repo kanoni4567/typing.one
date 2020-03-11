@@ -17,7 +17,7 @@ const defaultTheme = {
     defaultColor: '#363434',
     inputErrorColor: '#c6262e',
     inputColor: '#e8c4b8'
-}
+};
 
 function useLocalStorage(key, initialValue) {
     // State to store our value
@@ -56,18 +56,26 @@ function useLocalStorage(key, initialValue) {
 }
 
 function App() {
-    const [theme, setTheme] = useLocalStorage('theme',defaultTheme);
-    console.log(theme);
+    const [theme, setTheme] = useLocalStorage('theme', defaultTheme);
     return (
         <div
             css={css`
                 background-color: ${theme.backgroundColor};
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 text-align: center;
             `}
         >
+            <h2
+                css={css`
+                    padding-top: 2rem;
+                    color: ${theme.inputColor};
+                `}
+            >
+                Cat Facts Typing
+            </h2>
             <TypingWindow api={api} theme={theme} />
         </div>
     );

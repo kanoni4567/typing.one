@@ -4,7 +4,7 @@ import axios from 'axios';
 import { jsx, css } from '@emotion/core';
 
 const rootCss = css`
-    width: 70rem;
+    width: 65rem;
     height: 25rem;
     display: flex;
     flex-direction: column;
@@ -12,6 +12,7 @@ const rootCss = css`
     align-items: center;
     border-radius: 0.5rem;
     padding: 0 2rem; 
+    margin: auto;
 `;
 
 const linesContainerCss = css`
