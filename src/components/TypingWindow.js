@@ -48,7 +48,7 @@ const useFocusInput = inputEl => {
     }, []);
 };
 
-const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
+const useFillLinesToMax = (apis, linesArr, index, maxCount, setLines) => {
     useEffect(() => {
         const retrieveCount = maxCount - (linesArr.length - index);
         if (retrieveCount <= 0) {
@@ -56,11 +56,11 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
         }
         const promises = [];
         for (let i = 0; i < retrieveCount; i++) {
-            promises.push(axios.get(api));
+            promises.push(axios.get(apis[Math.floor(Math.random() * apis.length)]));
         }
         Promise.all(promises).then(responses => {
             // api specific filter (cat facts)
-            const lines = responses.map(res => res.data.data[0]).filter(line => line.length < 100 && !line.match(/(http)|(subscribe)|(valid)/g));
+            const lines = responses.map(res => res.data.data ? res.data.data[0] : res.data.quote).filter(line => line.length < 100 && !line.match(/(http)|(subscribe)|(valid)/g));
             const wordsOfLines = lines
                 .map(line =>
                     line
@@ -74,7 +74,7 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
             setLines([...linesArr, ...wordsOfLines]);
         });
         return () => {};
-    }, [linesArr, maxCount, setLines, api, index]);
+    }, [linesArr, maxCount, setLines, apis, index]);
 };
 
 const useWpmArr = (lines, lineIndex) => {
@@ -97,7 +97,7 @@ const useWpmArr = (lines, lineIndex) => {
     return wpmArr;
 };
 
-export default function TypingWindow({ defaultLines, api, offset, theme }) {
+export default function TypingWindow({ defaultLines, apis, offset, theme }) {
     if (!offset) {
         offset = 4;
     }
@@ -110,7 +110,7 @@ export default function TypingWindow({ defaultLines, api, offset, theme }) {
     // focus input when first rendered
     useFocusInput(inputEl);
 
-    useFillLinesToMax(api, lines, index, 5, setLines);
+    useFillLinesToMax(apis, lines, index, 5, setLines);
 
     const wpmArr = useWpmArr(lines, index);
 

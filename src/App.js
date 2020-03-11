@@ -6,7 +6,7 @@ import { jsx, css } from '@emotion/core';
 
 import TypingWindow from './components/TypingWindow';
 
-const api = 'https://meowfacts.herokuapp.com/';
+const apis = ['https://meowfacts.herokuapp.com/', 'https://api.kanye.rest'];
 
 const defaultTheme = {
     backgroundColor: '#363434',
@@ -74,9 +74,9 @@ function App() {
                     color: ${theme.inputColor};
                 `}
             >
-                Cat Facts Typing
+                Cat Facts & Kanye Quotes
             </h2>
-            <TypingWindow api={api} theme={theme} />
+            <TypingWindow apis={apis} theme={theme} />
         </div>
     );
 }
