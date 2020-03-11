@@ -5,16 +5,19 @@ import { jsx, css } from '@emotion/core';
 
 const rootCss = css`
     width: 70rem;
-    height: 50rem;
+    height: 25rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
+    border-radius: 0.5rem;
+    padding: 0 2rem; 
 `;
 
 const linesContainerCss = css`
     text-align: center;
     width: 100%;
+    margin: auto;
 `;
 
 const inputBaseCss = css`
@@ -38,10 +41,6 @@ const mainLineCss = css`
     padding: 1rem 0;
 `;
 
-const inputErrorCss = css`
-    background-color: #f67575;
-`;
-
 const useFocusInput = inputEl => {
     useEffect(() => {
         inputEl.current.focus();
@@ -59,7 +58,8 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
             promises.push(axios.get(api));
         }
         Promise.all(promises).then(responses => {
-            const lines = responses.map(res => res.data.data[0]);
+            // api specific filter (cat facts)
+            const lines = responses.map(res => res.data.data[0]).filter(line => line.length < 100 && !line.match(/(http)|(subscribe)|(valid)/g));
             const wordsOfLines = lines
                 .map(line =>
                     line
@@ -70,8 +70,6 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
                             correct: null
                         }))
                 )
-                // filter specifically for cat facts api
-                .filter(line => line.length < 20 && !line.some(wordObj => wordObj.word.match(/(http)|(subscribe)|(valid)/g)));
             setLines([...linesArr, ...wordsOfLines]);
         });
         return () => {};
@@ -158,17 +156,27 @@ export default function TypingWindow({ defaultLines, api, offset, theme }) {
         return () => inputRef.removeEventListener('keypress', handleKeyPress);
     });
 
-    let inputCss = inputBaseCss;
+    let inputCss = [
+        inputBaseCss,
+        css`
+            background-color: ${theme.inputColor};
+        `
+    ];
     if (
         lines[index] &&
         lines[index][wordIndex] &&
         inputLine !== lines[index][wordIndex].word.slice(0, inputLine.length)
     ) {
-        inputCss = [inputCss, inputErrorCss];
+        inputCss = [
+            inputCss,
+            css`
+                background-color: ${theme.inputErrorColor};
+            `
+        ];
     }
 
     return (
-        <div css={rootCss}>
+        <div css={[rootCss, css`background-color: ${theme.mainContainerColor};`]}>
             <div css={linesContainerCss}>
                 {renderLines(lines, index, wordIndex, offset, wpmArr, theme)}
             </div>
@@ -210,7 +218,13 @@ const colorizeLine = (line, wordIndex, theme) => {
 };
 
 const renderLines = (lines, lineIndex, wordIndex, offset, wpmArr, theme) => {
-    return lines.map((line, i) => {
+    let result = []
+    if (lineIndex - offset < 0) {
+        for (let i = 0; i < offset - lineIndex - 1; i++) {
+            result.push(<p css={linesBaseCss}>-</p>)
+        }
+    }
+    return [result, lines.map((line, i) => {
         if (i === lineIndex) {
             return (
                 <p css={mainLineCss}>{colorizeLine(line, wordIndex, theme)}</p>
@@ -227,10 +241,10 @@ const renderLines = (lines, lineIndex, wordIndex, offset, wpmArr, theme) => {
                             font-weight: bold;
                         `}
                     >
-                        {wpmArr[i]? ('WPM: ' + wpmArr[i]) : ''}
+                        {wpmArr[i] ? 'WPM: ' + wpmArr[i] : ''}
                     </span>
                 </p>
             );
         }
-    });
+    })];
 };

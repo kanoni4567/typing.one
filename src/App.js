@@ -9,11 +9,14 @@ import TypingWindow from './components/TypingWindow';
 const api = 'https://meowfacts.herokuapp.com/';
 
 const defaultTheme = {
-    backgroundColor: '#edffea',
-    matchColor: '#1eb2a6',
-    nomatchColor: '#f67575',
-    currentColor: '#ffa34d',
-    defaultColor: 'black'
+    backgroundColor: '#363434',
+    mainContainerColor: '#fafafa',
+    matchColor: '#68b723',
+    nomatchColor: '#c6262e',
+    currentColor: '#a56de2',
+    defaultColor: '#363434',
+    inputErrorColor: '#c6262e',
+    inputColor: '#e8c4b8'
 }
 
 function useLocalStorage(key, initialValue) {
