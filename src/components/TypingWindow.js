@@ -142,7 +142,6 @@ export default function TypingWindow({
 
     const wpmArr = useWpmArr(lines, index);
 
-
     // Completed all lines
     // useEffect(() => {
     //     if (index >= lines.length) {
@@ -213,7 +212,7 @@ export default function TypingWindow({
                 value={inputLine}
                 onChange={e => setInputLine(e.target.value)}
             ></input>
-            <p>{wpmArr}</p>
+            <p>{wpmArr[wpmArr.length - 1]}</p>
         </div>
     );
 }
