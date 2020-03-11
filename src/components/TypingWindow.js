@@ -3,19 +3,11 @@ import axios from 'axios';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 
-const matchCss = css`
-    color: #1eb2a6;
-`;
+const linesContainerCss = css``;
 
-const nomatchCss = css`
-    color: #f67575;
+const inputBaseCss = css`
+    margin: 1.5rem 0;
 `;
-
-const currentWordCss = css`
-    color: #ffa34d;
-`;
-
-const defaultWordCss = css``;
 
 const linesCss = css`
     transition: 0.15s;
@@ -25,49 +17,6 @@ const linesCss = css`
 const inputErrorCss = css`
     background-color: #f67575;
 `;
-
-// const lineDiff = (oldLine, newLine) => {
-//     var oldLineToCompare = oldLine.slice(0, newLine.length);
-//     var remain = oldLine.slice(newLine.length);
-//     let result = [];
-//     let match = '';
-//     let nomatch = '';
-//     for (let i = 0; i < newLine.length; i++) {
-//         const oldChar = oldLineToCompare[i];
-//         const newChar = newLine[i];
-
-//         if (oldChar === newChar) {
-//             match += newChar;
-//             if (nomatch.length) {
-//                 result.push(<span css={nomatchCss}>{nomatch}</span>);
-//                 nomatch = '';
-//             }
-//         } else {
-//             nomatch += newChar;
-//             if (match.length) {
-//                 result.push(<span css={matchCss}>{match}</span>);
-//                 match = '';
-//             }
-//         }
-//     }
-//     if (nomatch.length) {
-//         result.push(<span css={nomatchCss}>{nomatch}</span>);
-//         nomatch = '';
-//     }
-//     if (match.length) {
-//         result.push(<span css={matchCss}>{match}</span>);
-//         match = '';
-//     }
-//     remain = <span className="remain">{remain}</span>;
-//     result = (
-//         <>
-//             {result}
-//             {remain}
-//         </>
-//     );
-
-//     return result;
-// };
 
 const useFocusInput = inputEl => {
     useEffect(() => {
@@ -87,15 +36,17 @@ const useFillLinesToMax = (api, linesArr, index, maxCount, setLines) => {
         }
         Promise.all(promises).then(responses => {
             const lines = responses.map(res => res.data.data[0]);
-            const wordsOfLines = lines.map(line =>
-                line
-                    .trim()
-                    .split(' ')
-                    .map(word => ({
-                        word: word,
-                        correct: null
-                    }))
-            );
+            const wordsOfLines = lines
+                .map(line =>
+                    line
+                        .trim()
+                        .split(' ')
+                        .map(word => ({
+                            word: word,
+                            correct: null
+                        }))
+                )
+                .filter(line => line.length < 20);
             setLines([...linesArr, ...wordsOfLines]);
         });
         return () => {};
@@ -108,9 +59,9 @@ const useWpmArr = (lines, lineIndex) => {
     useEffect(() => {
         if (lineIndex > 0) {
             const correctKeyCount = lines[lineIndex - 1].reduce(
-                (prev, curr) => prev + (curr.correct ? curr.word.length : 0), 0
+                (prev, curr) => prev + (curr.correct ? curr.word.length : 0),
+                0
             );
-            console.log('correctKeyCount', correctKeyCount)
             const words = correctKeyCount / 5;
             const minutes = (Date.now() - lastStartTime) / 1000 / 60;
             let wpm = Math.floor(words / minutes);
@@ -122,12 +73,7 @@ const useWpmArr = (lines, lineIndex) => {
     return wpmArr;
 };
 
-export default function TypingWindow({
-    defaultLines,
-    setFinishedLines,
-    api,
-    offset
-}) {
+export default function TypingWindow({ defaultLines, api, offset, theme }) {
     if (!offset) {
         offset = 3;
     }
@@ -143,14 +89,6 @@ export default function TypingWindow({
     useFillLinesToMax(api, lines, index, 5, setLines);
 
     const wpmArr = useWpmArr(lines, index);
-
-    // Completed all lines
-    // useEffect(() => {
-    //     if (index >= lines.length) {
-    //         setFinishedLines(inputArr);
-    //     }
-    //     return;
-    // }, [index, setFinishedLines, lines.length, inputArr]);
 
     // Handle enter and space key press
     useEffect(() => {
@@ -195,18 +133,20 @@ export default function TypingWindow({
         return () => inputRef.removeEventListener('keypress', handleKeyPress);
     });
 
-    let inputCss = css``;
+    let inputCss = inputBaseCss;
     if (
         lines[index] &&
         lines[index][wordIndex] &&
         inputLine !== lines[index][wordIndex].word.slice(0, inputLine.length)
     ) {
-        inputCss = inputErrorCss;
+        inputCss = [inputCss, inputErrorCss];
     }
 
     return (
         <div>
-            <div>{renderLines(lines, index, wordIndex, offset)}</div>
+            <div css={linesContainerCss}>
+                {renderLines(lines, index, wordIndex, offset, theme)}
+            </div>
             <input
                 css={inputCss}
                 ref={inputEl}
@@ -218,26 +158,32 @@ export default function TypingWindow({
     );
 }
 
-const colorizeLine = (line, wordIndex) => {
+const colorizeLine = (line, wordIndex, theme) => {
     const result = [];
     for (let i = 0; i < line.length; i++) {
         const wordObj = line[i];
         let wordCss;
         if (wordObj.correct === true) {
-            wordCss = matchCss;
+            wordCss = css`
+                color: ${theme.matchColor};
+            `;
         } else if (wordObj.correct === false) {
-            wordCss = nomatchCss;
+            wordCss = css`
+                color: ${theme.nomatchColor};
+            `;
         } else if (i === wordIndex) {
-            wordCss = currentWordCss;
+            wordCss = css`
+                color: ${theme.currentColor};
+            `;
         } else {
-            wordCss = defaultWordCss;
+            wordCss = css``;
         }
         result.push(<span css={wordCss}>{wordObj.word} </span>);
     }
     return result;
 };
 
-const renderLines = (lines, lineIndex, wordIndex, offset) => {
+const renderLines = (lines, lineIndex, wordIndex, offset, theme) => {
     return lines.map((line, i) => {
         if (i === lineIndex) {
             return (
@@ -249,11 +195,11 @@ const renderLines = (lines, lineIndex, wordIndex, offset) => {
                         padding: 1rem 0;
                     `}
                 >
-                    {colorizeLine(line, wordIndex)}
+                    {colorizeLine(line, wordIndex, theme)}
                 </p>
             );
         } else if (i > lineIndex - offset && i < lineIndex + offset) {
-            return <p css={linesCss}>{colorizeLine(line, null)}</p>;
+            return <p css={linesCss}>{colorizeLine(line, null, theme)}</p>;
         }
     });
 };

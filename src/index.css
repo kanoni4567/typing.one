@@ -1,5 +1,6 @@
-html {
-    height: 100%;
+html, body, #root, #root>div {
+  height: 100%;
+  margin: 0;
 }
 
 * {
@@ -14,7 +15,6 @@ body {
         'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    min-height: 100%;
 }
 
 code {
