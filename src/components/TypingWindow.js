@@ -14,10 +14,12 @@ const nomatchCss = css`
 const currentWordCss = css`
     color: #ffa34d;
 `;
+
 const defaultWordCss = css``;
 
 const linesCss = css`
     transition: 0.15s;
+    padding: 0.2rem 0;
 `;
 
 const inputErrorCss = css`
@@ -154,11 +156,10 @@ export default function TypingWindow({
     useEffect(() => {
         const inputRef = inputEl.current;
 
-        function handleEnter(e) {
+        function handleKeyPress(e) {
             if (e.key === ' ') {
                 e.preventDefault();
                 if (inputRef.value !== '') {
-                    // If it is not the last word increment currentWord,
                     if (wordIndex < lines[index].length - 1) {
                         if (inputRef.value === lines[index][wordIndex].word) {
                             lines[index][wordIndex].correct = true;
@@ -190,8 +191,8 @@ export default function TypingWindow({
             }
             setLines(lines);
         }
-        inputRef.addEventListener('keypress', handleEnter);
-        return () => inputRef.removeEventListener('keypress', handleEnter);
+        inputRef.addEventListener('keypress', handleKeyPress);
+        return () => inputRef.removeEventListener('keypress', handleKeyPress);
     });
 
     let inputCss = css``;
@@ -245,6 +246,7 @@ const renderLines = (lines, lineIndex, wordIndex, offset) => {
                         ${linesCss};
                         font-size: x-large;
                         font-weight: bold;
+                        padding: 1rem 0;
                     `}
                 >
                     {colorizeLine(line, wordIndex)}
