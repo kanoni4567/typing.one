@@ -42,6 +42,7 @@ const linesContainerCss = css`
     text-align: center;
     width: 100%;
     margin: auto;
+    margin-top: 1.5rem;
 `;
 
 const singleLineContainerCss = css`
