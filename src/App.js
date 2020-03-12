@@ -61,7 +61,12 @@ function App() {
         >
             <h2
                 css={css`
-                    margin: 2rem 0 5rem 0;
+                    margin: 2rem 0;
+                    @media (min-width: 420px) {
+                        margin-bottom: 6rem;
+                    }
+                    /* position: absolute;
+                    top: 0; */
                     color: ${theme.titleColor};
                 `}
             >

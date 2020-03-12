@@ -22,8 +22,8 @@
         "inputErrorColor": "#EC5f67",
         "inputColor": "#1B2B34",
         "inputTextColor": "#CDD3DE",
-        "headerColor": "#99C794",
-        "wpmColor": "#F99157",
+        "headerColor": "#F99157",
+        "wpmColor": "#99C794",
         "titleColor": "#FAC863"
     }
 }

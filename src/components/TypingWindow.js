@@ -8,8 +8,11 @@ const innerPadding = css`
 `;
 
 const headerWrapperCss = css`
-    min-width: 55rem;
+    @media (min-width: 420px) {
+        min-width: 55rem;
+    }
     min-height: 25rem;
+    max-width: 80vw;
     display: flex;
     flex-direction: column;
 `;
@@ -305,31 +308,41 @@ const renderLines = (
     for (let i = 0; i < historyOffset - lineIndex; i++) {
         result.push(
             <div css={singleLineContainerCss} key={`emtpy${i}`}>
-                <div css={css`${linesBaseCss}; color: ${theme.defaultColor};`}>-</div>
+                <div
+                    css={css`
+                        ${linesBaseCss};
+                        color: ${theme.defaultColor};
+                    `}
+                >
+                    -
+                </div>
             </div>
         );
     }
-    return [...result, lines.map((line, i) => {
-        if (i > lineIndex - historyOffset && i < lineIndex + 2) {
-            return (
-                <div css={singleLineContainerCss} key={i}>
-                    <div css={i === lineIndex ? mainLineCss : linesBaseCss}>
-                        {colorizeLine(
-                            line,
-                            i === lineIndex ? wordIndex : null,
-                            theme
-                        )}
-                    </div>
-                    <div
-                        css={css`
+    return [
+        ...result,
+        lines.map((line, i) => {
+            if (i > lineIndex - historyOffset && i < lineIndex + 2) {
+                return (
+                    <div css={singleLineContainerCss} key={i}>
+                        <div css={i === lineIndex ? mainLineCss : linesBaseCss}>
+                            {colorizeLine(
+                                line,
+                                i === lineIndex ? wordIndex : null,
+                                theme
+                            )}
+                        </div>
+                        <div
+                            css={css`
                             ${lineWpmCss}
                             color: ${theme.wpmColor};
                         `}
-                    >
-                        {wpmArr[i] ? wpmArr[i] : ''}
+                        >
+                            {wpmArr[i] ? wpmArr[i] : ''}
+                        </div>
                     </div>
-                </div>
-            );
-        }
-    })];
+                );
+            }
+        })
+    ];
 };
