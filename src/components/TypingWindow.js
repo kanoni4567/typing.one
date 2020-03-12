@@ -5,25 +5,25 @@ import { jsx, css } from '@emotion/core';
 
 const innerPadding = css`
     padding: 0 2rem;
-`
+`;
 
 const headerWrapperCss = css`
     min-width: 55rem;
     min-height: 25rem;
     display: flex;
     flex-direction: column;
-`
+`;
 
 const headerCss = css`
     height: 1.5rem;
     display: flex;
     justify-content: flex-end;
     padding: 0.5rem 1.5rem;
-`
+`;
 
 const headerContentCss = css`
     font-size: 1rem;
-`
+`;
 
 const mainContainerCss = css`
     ${innerPadding}
@@ -32,7 +32,7 @@ const mainContainerCss = css`
     justify-content: flex-end;
     align-items: center;
     border-radius: 0.5rem;
-    flex: 1 0 auto; 
+    flex: 1 0 auto;
 `;
 
 const linesContainerCss = css`
@@ -43,7 +43,7 @@ const linesContainerCss = css`
 
 const singleLineContainerCss = css`
     position: relative;
-`
+`;
 
 const inputBaseCss = css`
     width: 50%;
@@ -72,7 +72,7 @@ const lineWpmCss = css`
     top: 0;
     right: 0;
     font-size: 1rem;
-`
+`;
 
 const useFocusInput = inputEl => {
     useEffect(() => {
@@ -88,21 +88,28 @@ const useFillLinesToMax = (apis, linesArr, index, maxCount, setLines) => {
         }
         const promises = [];
         for (let i = 0; i < retrieveCount; i++) {
-            promises.push(axios.get(apis[Math.floor(Math.random() * apis.length)]));
+            promises.push(
+                axios.get(apis[Math.floor(Math.random() * apis.length)])
+            );
         }
         Promise.all(promises).then(responses => {
             // api specific filter (cat facts)
-            const lines = responses.map(res => res.data.data ? res.data.data[0] : res.data.quote).filter(line => line.length < 100 && !line.match(/(http)|(subscribe)|(valid)/g));
-            const wordsOfLines = lines
-                .map(line =>
-                    line
-                        .trim()
-                        .split(' ')
-                        .map(word => ({
-                            word: word,
-                            correct: null
-                        }))
-                )
+            const lines = responses
+                .map(res => (res.data.data ? res.data.data[0] : res.data.quote))
+                .filter(
+                    line =>
+                        line.length < 100 &&
+                        !line.match(/(http)|(subscribe)|(valid)/g)
+                );
+            const wordsOfLines = lines.map(line =>
+                line
+                    .trim()
+                    .split(' ')
+                    .map(word => ({
+                        word: word,
+                        correct: null
+                    }))
+            );
             setLines([...linesArr, ...wordsOfLines]);
         });
         return () => {};
@@ -129,7 +136,12 @@ const useWpmArr = (lines, lineIndex) => {
     return wpmArr;
 };
 
-export default function TypingWindow({ defaultLines, apis, historyOffset, theme }) {
+export default function TypingWindow({
+    defaultLines,
+    apis,
+    historyOffset,
+    theme
+}) {
     if (!historyOffset) {
         historyOffset = 5;
     }
@@ -221,9 +233,23 @@ export default function TypingWindow({ defaultLines, apis, historyOffset, theme 
                     WPM
                 </div>
             </div>
-            <div css={[mainContainerCss, css`background-color: ${theme.mainContainerColor};`]}>
+            <div
+                css={[
+                    mainContainerCss,
+                    css`
+                        background-color: ${theme.mainContainerColor};
+                    `
+                ]}
+            >
                 <div css={linesContainerCss}>
-                    {renderLines(lines, index, wordIndex, historyOffset, wpmArr, theme)}
+                    {renderLines(
+                        lines,
+                        index,
+                        wordIndex,
+                        historyOffset,
+                        wpmArr,
+                        theme
+                    )}
                 </div>
                 <input
                     css={inputCss}
@@ -233,7 +259,6 @@ export default function TypingWindow({ defaultLines, apis, historyOffset, theme 
                 ></input>
             </div>
         </div>
-        
     );
 }
 
@@ -259,18 +284,41 @@ const colorizeLine = (line, wordIndex, theme) => {
                 color: ${theme.defaultColor};
             `;
         }
-        result.push(<span key={i} css={wordCss}>{wordObj.word} </span>);
+        result.push(
+            <span key={i} css={wordCss}>
+                {wordObj.word}{' '}
+            </span>
+        );
     }
     return result;
 };
 
-const renderLines = (lines, lineIndex, wordIndex, historyOffset, wpmArr, theme) => {
-    return lines.map((line, i) => {
+const renderLines = (
+    lines,
+    lineIndex,
+    wordIndex,
+    historyOffset,
+    wpmArr,
+    theme
+) => {
+    let result = [];
+    for (let i = 0; i < historyOffset - lineIndex; i++) {
+        result.push(
+            <div css={singleLineContainerCss} key={`emtpy${i}`}>
+                <div css={css`${linesBaseCss}; color: ${theme.defaultColor};`}>-</div>
+            </div>
+        );
+    }
+    return [...result, lines.map((line, i) => {
         if (i > lineIndex - historyOffset && i < lineIndex + 2) {
             return (
                 <div css={singleLineContainerCss} key={i}>
-                    <div css={i === lineIndex? mainLineCss : linesBaseCss}>
-                        {colorizeLine(line, i === lineIndex? wordIndex : null, theme)}
+                    <div css={i === lineIndex ? mainLineCss : linesBaseCss}>
+                        {colorizeLine(
+                            line,
+                            i === lineIndex ? wordIndex : null,
+                            theme
+                        )}
                     </div>
                     <div
                         css={css`
@@ -281,8 +329,7 @@ const renderLines = (lines, lineIndex, wordIndex, historyOffset, wpmArr, theme) 
                         {wpmArr[i] ? wpmArr[i] : ''}
                     </div>
                 </div>
-                
             );
         }
-    });
+    })];
 };
