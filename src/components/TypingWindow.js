@@ -72,7 +72,6 @@ const lineWpmCss = css`
     top: 0;
     right: 0;
     font-size: 1rem;
-    font-weight: bold;
 `
 
 const useFocusInput = inputEl => {
@@ -194,6 +193,7 @@ export default function TypingWindow({ defaultLines, apis, historyOffset, theme 
         inputBaseCss,
         css`
             background-color: ${theme.inputColor};
+            color: ${theme.inputTextColor};
         `
     ];
     if (
@@ -215,7 +215,7 @@ export default function TypingWindow({ defaultLines, apis, historyOffset, theme 
                 <div
                     css={css`
                         ${headerContentCss}
-                        color: ${theme.inputColor};
+                        color: ${theme.headerColor};
                     `}
                 >
                     WPM
@@ -275,7 +275,7 @@ const renderLines = (lines, lineIndex, wordIndex, historyOffset, wpmArr, theme) 
                     <div
                         css={css`
                             ${lineWpmCss}
-                            color: ${theme.defaultColor};
+                            color: ${theme.wpmColor};
                         `}
                     >
                         {wpmArr[i] ? wpmArr[i] : ''}

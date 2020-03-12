@@ -1,0 +1,29 @@
+{
+    "olivia": {
+        "backgroundColor": "#363434",
+        "mainContainerColor": "#fafafa",
+        "matchColor": "#68b723",
+        "nomatchColor": "#c6262e",
+        "currentColor": "#a56de2",
+        "defaultColor": "#363434",
+        "inputErrorColor": "#c6262e",
+        "inputColor": "#e8c4b8",
+        "inputTextColor": "",
+        "wpmColor": "",
+        "headerColor": "#e8c4b8"
+    },
+    "oceanNext": {
+        "backgroundColor": "#1B2B34",
+        "mainContainerColor": "#343D46",
+        "matchColor": "#5FB3B3",
+        "nomatchColor": "#EC5f67",
+        "currentColor": "#FAC863",
+        "defaultColor": "#CDD3DE",
+        "inputErrorColor": "#EC5f67",
+        "inputColor": "#1B2B34",
+        "inputTextColor": "#CDD3DE",
+        "headerColor": "#99C794",
+        "wpmColor": "#F99157",
+        "titleColor": "#FAC863"
+    }
+}

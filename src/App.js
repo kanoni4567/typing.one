@@ -4,18 +4,11 @@ import { jsx, css } from '@emotion/core';
 
 import TypingWindow from './components/TypingWindow';
 
+import * as themes from './themes.json'
+
 const apis = ['https://meowfacts.herokuapp.com/', 'https://api.kanye.rest'];
 
-const defaultTheme = {
-    backgroundColor: '#363434',
-    mainContainerColor: '#fafafa',
-    matchColor: '#68b723',
-    nomatchColor: '#c6262e',
-    currentColor: '#a56de2',
-    defaultColor: '#363434',
-    inputErrorColor: '#c6262e',
-    inputColor: '#e8c4b8'
-};
+const defaultTheme = themes["oceanNext"];
 
 function useLocalStorage(key, initialValue) {
     // State to store our value
@@ -69,7 +62,7 @@ function App() {
             <h2
                 css={css`
                     margin: 2rem 0 5rem 0;
-                    color: ${theme.inputColor};
+                    color: ${theme.titleColor};
                 `}
             >
                 Cat Facts & Kanye Quotes
