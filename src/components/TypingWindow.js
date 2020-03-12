@@ -11,7 +11,7 @@ const headerWrapperCss = css`
     @media (min-width: 420px) {
         min-width: 55rem;
     }
-    min-height: 25rem;
+    ${'' /* min-height: 15rem; */}
     max-width: 80vw;
     display: flex;
     flex-direction: column;
@@ -305,20 +305,20 @@ const renderLines = (
     theme
 ) => {
     let result = [];
-    for (let i = 0; i < historyOffset - lineIndex; i++) {
-        result.push(
-            <div css={singleLineContainerCss} key={`emtpy${i}`}>
-                <div
-                    css={css`
-                        ${linesBaseCss};
-                        color: ${theme.defaultColor};
-                    `}
-                >
-                    -
-                </div>
-            </div>
-        );
-    }
+    // for (let i = 0; i < historyOffset - lineIndex; i++) {
+    //     result.push(
+    //         <div css={singleLineContainerCss} key={`emtpy${i}`}>
+    //             <div
+    //                 css={css`
+    //                     ${linesBaseCss};
+    //                     color: ${theme.defaultColor};
+    //                 `}
+    //             >
+    //                 -
+    //             </div>
+    //         </div>
+    //     );
+    // }
     return [
         ...result,
         lines.map((line, i) => {
