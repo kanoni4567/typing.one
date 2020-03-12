@@ -8,8 +8,8 @@ const innerPadding = css`
 `
 
 const headerWrapperCss = css`
-    width: 65rem;
-    height: 25rem;
+    min-width: 55rem;
+    min-height: 25rem;
     display: flex;
     flex-direction: column;
 `
@@ -18,11 +18,11 @@ const headerCss = css`
     height: 1.5rem;
     display: flex;
     justify-content: flex-end;
-    padding: 0 1.5rem;
+    padding: 0.5rem 1.5rem;
 `
 
 const headerContentCss = css`
-    font-size: 0.8rem;
+    font-size: 1rem;
 `
 
 const mainContainerCss = css`
@@ -48,6 +48,7 @@ const singleLineContainerCss = css`
 const inputBaseCss = css`
     width: 50%;
     margin: 1.5rem 0;
+    font-size: 1.2rem;
     font: inherit;
     padding: 0.2rem 0.6rem;
     border: none;
@@ -70,7 +71,7 @@ const lineWpmCss = css`
     position: absolute;
     top: 0;
     right: 0;
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: bold;
 `
 
@@ -129,9 +130,9 @@ const useWpmArr = (lines, lineIndex) => {
     return wpmArr;
 };
 
-export default function TypingWindow({ defaultLines, apis, offset, theme }) {
-    if (!offset) {
-        offset = 4;
+export default function TypingWindow({ defaultLines, apis, historyOffset, theme }) {
+    if (!historyOffset) {
+        historyOffset = 5;
     }
     const inputEl = useRef(null);
     const [lines, setLines] = useState(defaultLines || []);
@@ -222,7 +223,7 @@ export default function TypingWindow({ defaultLines, apis, offset, theme }) {
             </div>
             <div css={[mainContainerCss, css`background-color: ${theme.mainContainerColor};`]}>
                 <div css={linesContainerCss}>
-                    {renderLines(lines, index, wordIndex, offset, wpmArr, theme)}
+                    {renderLines(lines, index, wordIndex, historyOffset, wpmArr, theme)}
                 </div>
                 <input
                     css={inputCss}
@@ -263,9 +264,9 @@ const colorizeLine = (line, wordIndex, theme) => {
     return result;
 };
 
-const renderLines = (lines, lineIndex, wordIndex, offset, wpmArr, theme) => {
+const renderLines = (lines, lineIndex, wordIndex, historyOffset, wpmArr, theme) => {
     return lines.map((line, i) => {
-        if (i > lineIndex - offset && i < lineIndex + offset) {
+        if (i > lineIndex - historyOffset && i < lineIndex + 2) {
             return (
                 <div css={singleLineContainerCss} key={i}>
                     <div css={i === lineIndex? mainLineCss : linesBaseCss}>
