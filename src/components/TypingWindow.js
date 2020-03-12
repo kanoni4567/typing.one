@@ -60,7 +60,7 @@ const linesBaseCss = css`
 
 const mainLineCss = css`
     ${linesBaseCss};
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: bold;
     padding: 1rem 0;
 `;
