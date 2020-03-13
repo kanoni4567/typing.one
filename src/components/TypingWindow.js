@@ -50,7 +50,8 @@ const singleLineContainerCss = css`
 `;
 
 const inputBaseCss = css`
-    width: 50%;
+    width: 55%;
+    height: 1.7rem;
     margin: 1.5rem 0;
     font-size: 1.2rem;
     font: inherit;
