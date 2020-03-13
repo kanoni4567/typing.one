@@ -4,7 +4,7 @@
 <br/>
 ![typing.one](Capture.PNG)
 ## Why did I make it?
-* To type with my new keyboard.<br/>
+* To type on my new keyboard.<br/>
 * Many typing websites don't look good enough. I love the design of <a href="https://typings.gg" target="_blank">typings.gg</a>, but also wanted to type meaningful(?) sentences instead of random words.<br/>
 * To use React hooks.<br/>
 ## How does it work?
