@@ -9,7 +9,7 @@
 * To use React hooks.<br/>
 ## How does it work?
 It consumes 2 public API, <a href="https://alexwohlbruck.github.io/cat-facts" target="_blank">Cat facts</a> and <a href="https://kanye.rest" target="_blank">Kanye quotes</a>.<br/>
-You need to type to complete facts about cats or quotes from Kanye. How fun!<br/>
+You need to type out some facts about cats or quotes from Kanye. How fun!<br/>
 
 
 
