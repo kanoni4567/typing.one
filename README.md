@@ -1,6 +1,6 @@
 # typing.one
 ## What is it?
-<a href="https://typing.one" target="_blank">typing.one</a> is a website for to practice typing.<br/>
+<a href="https://typing.one" target="_blank">typing.one</a> is a website to practice typing.<br/>
 ## Why did I make it?
 * To type with my new keyboard.<br/>
 * Many typing websites don't look good enough. I love the design of <a href="https://typings.gg" target="_blank">typings.gg</a>, but also wanted to type meaningful(?) sentences instead of random words.<br/>
