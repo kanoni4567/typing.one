@@ -1,7 +1,7 @@
 # typing.one
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8e6b1964-7d75-4fba-93e1-386447c71cdb/deploy-status)](https://app.netlify.com/sites/focused-kirch-bb4011/deploys)
 ### What is it?
-<a href="https://typing.one" target="_blank">typing.one</a> is a website to practice typing.<br/>
+<a href="https://focused-kirch-bb4011.netlify.app" target="_blank">typing.one</a> is a website to practice typing.<br/>
 <br/>
 ![typing.one](Capture.PNG)
 ### Why did I make it?
